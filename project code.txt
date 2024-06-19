@@ -1,22 +1,17 @@
-// Pin definitions
-const int raindropSensorPin = 2;  // Raindrop sensor connected to D2
-const int proximitySensorPin = 3; // Proximity sensor connected to D3
-const int motorAControlPin1 = 4;  // Motor A IN1 connected to D4 on L298N
-const int motorAControlPin2 = 5;  // Motor A IN2 connected to D5 on L298N
-const int motorBControlPin1 = 6;  // Motor B IN3 connected to D6 on L298N
-const int motorBControlPin2 = 7;  // Motor B IN4 connected to D7 on L298N
-const int in3Pin = 8;             // Motor A enable pin ENA connected to D8 on L298N
-const int in4Pin = 9;             // Motor B enable pin ENB connected to D9 on L298N
+const int raindropSensorPin = 2;  
+const int proximitySensorPin = 3; 
+const int motorAControlPin1 = 4;  
+const int motorAControlPin2 = 5;  
+const int motorBControlPin1 = 6;  
+const int motorBControlPin2 = 7;  
+const int in3Pin = 8;             
+const int in4Pin = 9;             
 
 void setup() {
-  // Initialize serial communication
   Serial.begin(9600);
-
-  // Set sensor pins as input
   pinMode(raindropSensorPin, INPUT);
   pinMode(proximitySensorPin, INPUT);
 
-  // Set motor control pins as output
   pinMode(motorAControlPin1, OUTPUT);
   pinMode(motorAControlPin2, OUTPUT);
   pinMode(motorBControlPin1, OUTPUT);
@@ -24,7 +19,6 @@ void setup() {
   pinMode(in3Pin, OUTPUT);
   pinMode(in4Pin, OUTPUT);
 
-  // Ensure motors are initially off
   digitalWrite(motorAControlPin1, LOW);
   digitalWrite(motorAControlPin2, LOW);
   digitalWrite(motorBControlPin1, LOW);
@@ -36,52 +30,45 @@ void setup() {
 }
 
 void loop() {
-  // Read sensor values
   int raindropValue = digitalRead(raindropSensorPin);
   int proximityValue = digitalRead(proximitySensorPin);
 
-  // Print the sensor values for debugging
   Serial.print("Raindrop sensor value: ");
   Serial.println(raindropValue);
   Serial.print("Proximity sensor value: ");
   Serial.println(proximityValue);
 
-  // Check if raindrop sensor detects moisture
-  if (raindropValue == LOW) { // Inverted logic for moisture detection
+
+  if (raindropValue == LOW) { 
     Serial.println("Moisture detected! Running motor A for one revolution.");
     runMotorOneRevolution(motorAControlPin1, motorAControlPin2);
-    delay(1000); // Wait for a second to avoid multiple triggers
+    delay(1000); 
   } else {
     Serial.println("No moisture detected.");
   }
 
-  // Check if proximity sensor detects an object
-  if (proximityValue == LOW) { // Inverted logic for object detection
+  if (proximityValue == LOW) { 
     Serial.println("Object detected! Running motor B for one revolution.");
     runMotorOneRevolution(motorBControlPin1, motorBControlPin2);
-    delay(1000); // Wait for a second to avoid multiple triggers
+    delay(1000); 
   } else {
     Serial.println("No object detected.");
   }
 
-  delay(100); // Short delay to debounce the sensors
+  delay(100);
 }
 
 void runMotorOneRevolution(int controlPin1, int controlPin2) {
-  // Enable motor driver by setting ENA or ENB high
   digitalWrite(in3Pin, HIGH);
   digitalWrite(in4Pin, HIGH);
 
-  // Rotate the motor for one revolution
   digitalWrite(controlPin1, HIGH);
   digitalWrite(controlPin2, LOW);
-  delay(1000); // Adjust this delay to match one revolution of your motor
+  delay(1000); 
   
-  // Stop the motor
   digitalWrite(controlPin1, LOW);
   digitalWrite(controlPin2, LOW);
 
-  // Disable motor driver by setting ENA or ENB low
   digitalWrite(in3Pin, LOW);
   digitalWrite(in4Pin, LOW);
 }
